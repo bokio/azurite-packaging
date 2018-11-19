@@ -1,17 +1,20 @@
 # azurite-packaging
-Some packaging tools around [Azurite](https://github.com/Azure/Azurite) for use on developer machines and build servers
+This project contains some minimal supporting tools around [Azurite](https://github.com/Azure/Azurite) for use on developer machines and build servers.
 
 ## Setup
 
-###Prerequisites
+### Prerequisites
 * Node XX (or newer)
 * Yarn XX (or newer)
-* Windows Powershell for the Task Scheduler scripts
+* Windows Powershell 4 (comes pre-installed on modern Windows systems)
 
-###First time setup
-`yarn install`
+### First time setup
+
+    yarn install
 
 ## Scripts
-`yarn azurite` to start Azurite with default settings
-`yarn addlogontask` to add (or just verify) a Windows task scheduler task that starts Azurite on logon for the current user
-
+* `yarn azurite` to start Azurite with default settings
+* `yarn addlogontask` to add (if missing) a Windows task scheduler task that starts Azurite on logon for the current user. Will self-elevate (UAC) for administrative access.
+* `yarn removelogontask` to remove the Windows task scheduler task that addlogontask created
+* `yarn addstartuptask` to add (if missing) a Windows task scheduler task that starts Azurite on system startup. Will self-elevate (UAC) for administrative access.
+* `yarn removestartuptask` to add (if missing) a Windows task scheduler task that starts Azurite on system startup. Will self-elevate (UAC) for administrative access.

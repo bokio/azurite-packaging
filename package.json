@@ -4,8 +4,10 @@
     "private": false,
     "scripts": {
         "azurite": "azurite -l ./azurite-data",
-        "addlogontask": "powershell.exe -executionpolicy Unrestricted scripts/addlogontask.ps1 azurite-logon ../node_modules/.bin",
-        "removelogontask": "powershell.exe -executionpolicy Unrestricted scripts/removelogontask.ps1 azurite-logon"
+        "addlogontask": "powershell.exe -executionpolicy Unrestricted scripts/addtask.ps1 -taskname azurite-task -datadir ../node_modules/.bin -atlogon",
+        "addstartuptask": "powershell.exe -executionpolicy Unrestricted scripts/addtask.ps1 -taskname azurite-task -datadir ../node_modules/.bin -atstartup",
+        "addlogonorstartuptask": "powershell.exe -executionpolicy Unrestricted scripts/addtask.ps1 -taskname azurite-task -datadir ../node_modules/.bin -atstartup -atlogon",
+        "removetask": "powershell.exe -executionpolicy Unrestricted scripts/removetask.ps1 -taskname azurite-task"
     },
     "dependencies": {
         "azurite": "2.7.0"
