@@ -29,7 +29,7 @@ function New-AzuriteTask() {
     if ($atstartup) {
         $triggers += New-ScheduledTaskTrigger -AtStartup
     }
-    $S = New-ScheduledTaskSettingsSet -Hidden 
+    $S = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd
     $P = New-ScheduledTaskPrincipal -UserId $user -LogonType S4U # S4U is the "Don't save password" option
 
     $taskParams=@{
