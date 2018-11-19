@@ -2,6 +2,7 @@ function RecreateArg($key, $value) {
     [string]$k = $key
     [string]$v = $value
     if ($value.GetType().Name -eq 'SwitchParameter') {
+        # switch params are special
         if ($value) {
             return "-${k}"
         }

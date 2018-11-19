@@ -3,6 +3,12 @@ param(
     [string]$taskname
 )
 
+. (Join-Path $PSScriptRoot "elevate.ps1")
+
+if (Run-Elevated $PSCommandPath $MyInvocation) {
+    # This script was already run in an elevated prompt (we can't tell if it failed)
+    return
+}
 
 $task=Get-ScheduledTask -TaskName $taskname -ErrorAction SilentlyContinue
 if ($task) {
