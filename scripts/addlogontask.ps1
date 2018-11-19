@@ -19,12 +19,11 @@ function New-AzuriteTask() {
     # This is beyond stupid
     $fulldatadir = $executionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($datadir)
     $bindir = $executionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath("../node_modules/.bin")
-
+    $user = $(whoami)
     $A = New-ScheduledTaskAction -Execute "azurite" -Argument "-l ""$fulldatadir""" -WorkingDirectory $bindir
-    $T = New-ScheduledTaskTrigger -AtLogOn -User $(whoami)
+    $T = New-ScheduledTaskTrigger -AtLogOn -User $user
     $S = New-ScheduledTaskSettingsSet -Hidden 
-    $P = New-ScheduledTaskPrincipal -UserId "LOCALSERVICE" -LogonType ServiceAccount
-    #$P = New-ScheduledTaskPrincipal -UserId $(whoami) -LogonType Password
+    $P = New-ScheduledTaskPrincipal -UserId $user -LogonType S4U 
 
     $task=Get-ScheduledTask -TaskName $taskname -ErrorAction SilentlyContinue
 
