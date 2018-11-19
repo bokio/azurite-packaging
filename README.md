@@ -17,5 +17,5 @@ This project contains some minimal supporting tools around [Azurite](https://git
 * `yarn azurite` to start Azurite with default settings
 * `yarn addlogontask` to add (if missing) a Windows task scheduler task that starts Azurite on logon for the current user. Will self-elevate (UAC) for administrative access.
 * `yarn addstartuptask` to add (if missing) a Windows task scheduler task that starts Azurite on system startup. Will self-elevate (UAC) for administrative access.
-* `yarn addlogonorstartuptask` to add (if missing) a Windows task scheduler task that starts Azurite on system startup OR logon by teh current user. Will self-elevate (UAC) for administrative access.
+* `yarn addlogonorstartuptask` to add (if missing) a Windows task scheduler task that starts Azurite on system startup OR logon by the current user. Will self-elevate (UAC) for administrative access.
 * `yarn removetask` to remove the Windows task scheduler task that any of the "add" scripts added
