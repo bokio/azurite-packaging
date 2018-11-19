@@ -1,0 +1,13 @@
+{
+    "name": "azurite-packaging",
+    "version": "0.1.0",
+    "private": false,
+    "scripts": {
+        "azurite": "azurite -l ./azurite-data",
+        "addlogontask": "powershell.exe -executionpolicy Unrestricted scripts/addlogontask.ps1 azurite-logon ../node_modules/.bin",
+        "removelogontask": "powershell.exe -executionpolicy Unrestricted scripts/removelogontask.ps1 azurite-logon"
+    },
+    "dependencies": {
+        "azurite": "2.7.0"
+    }
+}
