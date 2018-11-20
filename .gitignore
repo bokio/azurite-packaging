@@ -1,3 +1,4 @@
 azurite-data/
 node_modules/
 yarn-error.log
+scripts/azurite.pid

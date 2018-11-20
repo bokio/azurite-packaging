@@ -1,6 +1,7 @@
 param(
     [Parameter(Mandatory)]
-    [string]$datadir
+    [string]$datadir,
+    [switch]$visible
 )
 
 Push-Location $PSScriptRoot 
@@ -18,7 +19,11 @@ Remove-Item -path $pidfile -force 2>$null -ErrorAction SilentlyContinue
 $azuritebin = "${bindir}/azurite"
 $azuriteargs = @("-l", """$fulldatadir""")
 
-$p = Start-Process -FilePath $azuritebin -ArgumentList $azuriteargs -passthru
+$winstyle="Hidden"
+if ($visible) {
+    $winstyle="Normal"
+}
+$p = Start-Process -FilePath $azuritebin -ArgumentList $azuriteargs -passthru -WindowStyle $winstyle
 
 Pop-Location
 
