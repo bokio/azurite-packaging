@@ -5,15 +5,21 @@ param(
 
 . (Join-Path $PSScriptRoot "elevate.ps1")
 
-if (Run-Elevated $PSCommandPath $MyInvocation) {
-    # This script was already run in an elevated prompt (we can't tell if it failed)
-    return
-}
-
 $task=Get-ScheduledTask -TaskName $taskname -ErrorAction SilentlyContinue
 if ($task) {
-    Unregister-ScheduledTask -TaskName $task.TaskName -TaskPath $task.TaskPath -Confirm:$false -ErrorAction Continue
-    Write-Output "The task $taskname was removed"
+    Try {        
+        if ($task.State -eq "Running") {
+            $task | Stop-ScheduledTask
+        }
+        Unregister-ScheduledTask -TaskName $task.TaskName -TaskPath $task.TaskPath -Confirm:$false -ErrorAction Stop
+        Write-Output "The task $taskname was removed"
+    }
+    Catch [Microsoft.Management.Infrastructure.CimException] {
+        Write-Host "Failed - trying with elevated privileges"
+        if (Run-Elevated $PSCommandPath $MyInvocation) {
+
+        }
+    }
 }
 else {
     Write-Output "The task $taskname could not be found"

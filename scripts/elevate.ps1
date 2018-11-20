@@ -20,12 +20,17 @@ function RecreateArgsList($invocation) {
     return $argList
 }
 
-function Run-Elevated($script, $invocation) {
+function Is-Elevated() {
     $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
     $myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
     $adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
 
-    if (!$myWindowsPrincipal.IsInRole($adminRole)) {
+    return $myWindowsPrincipal.IsInRole($adminRole)
+}
+
+function Run-Elevated($script, $invocation) {
+
+    if (!(Is-Elevated)) {
         [string[]]$argList = @('-File', $script)
         $argList += RecreateArgsList $invocation
         # Re-launch elevated

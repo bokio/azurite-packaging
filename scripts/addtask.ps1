@@ -4,53 +4,69 @@ param(
     [Parameter(Mandatory)]
     [string]$datadir,
     [switch]$atlogon,
-    [switch]$atstartup
+    [switch]$atstartup,
+    [switch]$starttask
 )
 
 . (Join-Path $PSScriptRoot "elevate.ps1")
 
-if (Run-Elevated $PSCommandPath $MyInvocation) {
-    # This script was already run in an elevated prompt (we can't tell if it failed)
-    return
-}
-
-function New-AzuriteTask() {
-    Push-Location $PSScriptRoot 
+function New-AzuriteTask($invocation) {
+    Push-Location $PSScriptRoot
 
     [string]$fulldatadir = Resolve-Path $datadir
     [string]$bindir = Resolve-Path "../node_modules/.bin" # yarn creates this for us
     $user = whoami
 
     $A = New-ScheduledTaskAction -Execute "azurite" -Argument "-l ""$fulldatadir""" -WorkingDirectory $bindir
+    $logontype = "Interactive"
     $triggers = @()
     if ($atlogon) {
         $triggers += New-ScheduledTaskTrigger -AtLogOn -User $user
+        $logontype = "S4U"  # S4U is the "Don't save password" option
     }
     if ($atstartup) {
         $triggers += New-ScheduledTaskTrigger -AtStartup
+        $logontype = "S4U"
     }
     $S = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -DontStopOnIdleEnd
-    $P = New-ScheduledTaskPrincipal -UserId $user -LogonType S4U # S4U is the "Don't save password" option
+    $P = New-ScheduledTaskPrincipal -UserId $user -LogonType $logontype
 
     $taskParams=@{
         TaskName=$taskname;
         Action=$A;
-        Trigger=$triggers;
         Settings=$S;
         Principal=$P;
     }
-
-    $task=Get-ScheduledTask -TaskName $taskname -ErrorAction SilentlyContinue
-    if (!$task) {
-        Write-Host "Creating task $taskname"
-        $task = Register-ScheduledTask @taskParams
+    if ($triggers.Length -gt 0) {
+        $taskParams.Trigger=$triggers;
     }
-    else {
-        Write-Host "Modifying task $taskname"
-        Set-ScheduledTask -TaskPath $task.TaskPath @taskParams 
+
+    Try {
+        $task=Get-ScheduledTask -TaskName $taskname -ErrorAction SilentlyContinue
+        if (!$task) {
+            $task = Register-ScheduledTask @taskParams -ErrorAction Stop
+            Write-Host "Created task $taskname"
+        }
+        else {
+            Set-ScheduledTask -TaskPath $task.TaskPath @taskParams -ErrorAction Stop
+            Write-Host "Modified task $taskname"
+        }
+    }
+    Catch [Microsoft.Management.Infrastructure.CimException] {
+        Write-Host "Failed - trying with elevated privileges"
+        if (Run-Elevated $PSCommandPath $invocation) {
+
+        }
+    }
+    Catch {
+        Write-Host "Failed: $($_.Exception)}"
     }
 
     Pop-Location
+
+    if ($starttask) {
+        $task | Start-ScheduledTask 
+    }
 }
 
-New-AzuriteTask
+New-AzuriteTask $MyInvocation
