@@ -6,9 +6,9 @@ This project contains some minimal supporting tools around [Azurite](https://git
 ### Prerequisites
 * Node XX (or newer)
 * Yarn XX (or newer)
-* Windows Powershell 4 (comes pre-installed on modern Windows systems)
+* Windows Powershell 4 (or newer - comes pre-installed on modern Windows systems)
 
-### First time setup
+### Setup
 
     yarn install
 
@@ -22,3 +22,8 @@ This project contains some minimal supporting tools around [Azurite](https://git
 * `yarn start` to start azurite in a new process in a hidden window and save the process id in a pidfile
 * `yarn start-visible` to start azurite in a new process in a visible window and save the process id in a pidfile
 * `yarn stop` to stop azurite given a process id in the pidfile created by `start`. The pidfile is removed.
+
+## Noteworthy
+Windows task scheduler doesn't stop the process properly since it doesn't stop the child processes started from the cmd process that the azurite launcher is executed in,
+so the tasks created are mostly just good for ensuring that azurite is launched.
+For more control, use the start and stop commands.
