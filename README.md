@@ -1,5 +1,5 @@
 # azurite-packaging
-This project contains some minimal supporting tools around [Azurite](https://github.com/Azure/Azurite) for use on developer machines and build servers.
+This project contains some minimal supporting tools around [Azurite](https://github.com/Azure/Azurite) for use on developer machines and build servers if you can't use the linux docker container packaging, which is preferred.
 
 ## Setup
 
